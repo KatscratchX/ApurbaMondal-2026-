@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Marbles — Brain Stimulation Headset · Apurba Mondal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--rust:#C4542A;--rl:#E8714A;--cream:#F7F3EE;--ww:#FDFAF7;--ch:#2E2C2A;--mid:#6B6460;--sand:#D4C5B2;--sl:#EDE4D8;--teal:#2A6B6E;--navy:#1E2A4A;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ch);overflow-x:hidden;cursor:none;}
+.cur{width:12px;height:12px;background:var(--rust);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+.ring{width:36px;height:36px;border:1.5px solid var(--rust);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,opacity .3s;opacity:.5;}
+@media(hover:none),(pointer:coarse){.cur,.ring{display:none!important}body{cursor:auto}}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(247,243,238,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--sl);}
+.back{display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .2s;}
+.back:hover{color:var(--rust);}
+.ba{width:28px;height:28px;border:1.5px solid var(--sand);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;}
+.back:hover .ba{border-color:var(--rust);background:var(--rust);color:#fff;}
+.nttl{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);}
+.nxt{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .2s;}
+.nxt:hover{color:var(--rust);}
+@media(max-width:600px){nav{padding:16px 24px;}.nttl{display:none;}}
+.hero{min-height:100vh;background:var(--navy);display:flex;flex-direction:column;justify-content:flex-end;padding:0 60px 80px;position:relative;overflow:hidden;}
+.glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(196,84,42,.14) 0%,transparent 70%);top:-80px;right:-100px;pointer-events:none;}
+.hlbl{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:20px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,7vw,6.5rem);font-weight:900;line-height:1;color:var(--ww);margin-bottom:24px;z-index:1;position:relative;}
+.hero h1 em{font-style:italic;color:var(--rl);}
+.hsub{font-size:clamp(.95rem,1.4vw,1.1rem);font-weight:300;color:rgba(255,255,255,.5);max-width:540px;line-height:1.75;margin-bottom:44px;z-index:1;position:relative;}
+.hmeta{display:flex;gap:40px;flex-wrap:wrap;z-index:1;position:relative;}
+.mi{display:flex;flex-direction:column;gap:5px;}
+.ml{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.28);}
+.mv{font-size:.88rem;font-weight:500;color:rgba(255,255,255,.78);}
+@media(max-width:600px){.hero{padding:0 24px 56px;}.hmeta{gap:22px;}}
+.s{padding:96px 60px;max-width:1200px;margin:0 auto;}
+.sd{background:var(--ch);padding:96px 60px;}
+.sdi{max-width:1200px;margin:0 auto;}
+.lbl{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rust);margin-bottom:14px;}
+.sd .lbl{color:var(--rl);}
+.num{font-family:'Playfair Display',serif;font-size:.7rem;font-weight:700;color:var(--sand);letter-spacing:.1em;margin-bottom:6px;}
+h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,3vw,2.9rem);font-weight:900;line-height:1.1;color:var(--ch);margin-bottom:26px;}
+h2 em{font-style:italic;color:var(--rust);}
+.sd h2{color:var(--ww);}
+.sd h2 em{color:var(--rl);}
+p{font-size:.96rem;font-weight:300;line-height:1.85;color:var(--mid);max-width:660px;margin-bottom:16px;}
+p strong{font-weight:500;color:var(--ch);}
+.sd p{color:rgba(255,255,255,.5);}
+.sd p strong{color:rgba(255,255,255,.85);}
+@media(max-width:1024px){.s{padding:68px 36px;}.sd{padding:68px 36px;}}
+@media(max-width:600px){.s{padding:52px 24px;}.sd{padding:52px 24px;}}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:68px;align-items:start;}
+@media(max-width:900px){.two{grid-template-columns:1fr;gap:32px;}}
+.pq{border-left:3px solid var(--rust);padding:6px 0 6px 22px;margin:26px 0;}
+.pq p{font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:var(--ch)!important;line-height:1.6;margin:0;max-width:none;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:38px;}
+.card{background:var(--ww);border:1.5px solid var(--sl);border-radius:12px;padding:26px 22px;transition:border-color .25s;}
+.card:hover{border-color:var(--rust);}
+.cn{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--rust);line-height:1;margin-bottom:10px;}
+.card h4{font-family:'Playfair Display',serif;font-size:.9rem;font-weight:700;color:var(--ch);margin-bottom:7px;}
+.card p{font-size:.82rem;line-height:1.7;color:var(--mid);margin:0;}
+@media(max-width:900px){.cards{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.cards{grid-template-columns:1fr;}}
+.steps{margin-top:38px;}
+.step{display:grid;grid-template-columns:60px 1fr;gap:24px;padding:26px 0;border-bottom:1px solid var(--sl);align-items:start;}
+.step:last-child{border-bottom:none;}
+.sn{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:var(--sand);line-height:1;}
+.step h4{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ch);margin-bottom:7px;}
+.step p{font-size:.87rem;line-height:1.75;color:var(--mid);max-width:560px;margin:0;}
+.stag{display:inline-block;margin-top:9px;font-family:'DM Mono',monospace;font-size:.57rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);background:rgba(42,107,110,.08);padding:3px 9px;border-radius:20px;}
+@media(max-width:600px){.step{grid-template-columns:42px 1fr;gap:14px;}.sn{font-size:1.8rem;}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:36px;}
+.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:22px 18px;}
+.stn{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--rl);line-height:1;margin-bottom:6px;}
+.stl{font-size:.78rem;font-weight:300;color:rgba(255,255,255,.4);line-height:1.5;}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr;}}
+.specs{width:100%;border-collapse:collapse;margin-top:24px;}
+.specs tr{border-bottom:1px solid var(--sl);}
+.specs tr:last-child{border-bottom:none;}
+.specs td{padding:12px 0;font-size:.87rem;line-height:1.5;}
+.specs td:first-child{font-family:'DM Mono',monospace;font-size:.59rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);width:180px;padding-right:18px;}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;}
+.tag{font-family:'DM Mono',monospace;font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);border:1px solid var(--sl);border-radius:20px;padding:4px 11px;background:var(--ww);}
+.ifull{width:100%;display:block;cursor:zoom-in;transition:opacity .2s;}
+.ifull:hover{opacity:.94;}
+.cap{font-family:'DM Mono',monospace;font-size:.57rem;letter-spacing:.11em;text-transform:uppercase;color:var(--sand);text-align:center;padding:11px 60px 8px;}
+.i2{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+.islot{overflow:hidden;cursor:zoom-in;}
+.islot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.islot:hover img{transform:scale(1.03);}
+@media(max-width:700px){.i2{grid-template-columns:1fr;}}
+.div{height:1px;background:var(--sl);margin:0 60px;}
+@media(max-width:600px){.div{margin:0 24px;}}
+.lb{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;}
+.lb.on{opacity:1;pointer-events:all;}
+.lbbg{position:absolute;inset:0;background:rgba(28,26,24,.55);backdrop-filter:blur(20px);}
+.lbw{position:relative;z-index:1;max-width:92vw;max-height:92vh;border-radius:10px;overflow:hidden;transform:scale(.92);transition:transform .4s cubic-bezier(.16,1,.3,1);box-shadow:0 40px 80px rgba(0,0,0,.5);}
+.lb.on .lbw{transform:scale(1);}
+.lbw img{display:block;max-width:92vw;max-height:92vh;object-fit:contain;}
+.lbx{position:absolute;top:18px;right:22px;z-index:2;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:none;transition:background .2s;}
+.lbx:hover{background:rgba(255,255,255,.28);}
+footer{background:#141210;padding:52px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.fl{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:rgba(255,255,255,.35);}
+.fl span{font-style:italic;color:rgba(255,255,255,.18);}
+.fb{display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s;}
+.fb:hover{color:#E8714A;}
+@media(max-width:600px){footer{padding:34px 24px;flex-direction:column;align-items:flex-start;}}
+.fade{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+.fade.on{opacity:1;transform:none;}
+.fd1{transition-delay:.1s}.fd2{transition-delay:.2s}.fd3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div><div class="ring" id="ring"></div>
+<nav>
+  <a href="index.html" class="back"><span class="ba">&#8592;</span>Back to portfolio</a>
+  <span class="nttl">Marbles &middot; Brain Stimulation Headset</span>
+  <a href="https://www.marbles.health/" target="_blank" class="nxt">marbles.health &#8599;</a>
+</nav>
+
+<section class="hero">
+  <div class="glow"></div>
+  <div class="hlbl">Case Study &middot; Freelance &middot; 2021&ndash;Present</div>
+  <h1>Marbles &mdash;<br><em>Brain Stimulation</em><br>Headset</h1>
+  <p class="hsub">An EEG + tDCS wearable for clinical depression &mdash; designed to be worn like a headphone, not a medical device. Scaled to 150 SLA-printed units.</p>
+  <div class="hmeta">
+    <div class="mi"><span class="ml">Role</span><span class="mv">Industrial / UX Designer</span></div>
+    <div class="mi"><span class="ml">Duration</span><span class="mv">2021&ndash;Present</span></div>
+    <div class="mi"><span class="ml">Domain</span><span class="mv">Wearable Medical Device</span></div>
+    <div class="mi"><span class="ml">Output</span><span class="mv">150 SLA / FDM Units</span></div>
+  </div>
+</section>
+
+<div class="s fade">
+  <div class="num">01</div><div class="lbl">Overview &amp; Problem</div>
+  <div class="two">
+    <div>
+      <h2>A therapy that works &mdash; if patients <em>actually wear it</em>.</h2>
+      <p>tDCS is clinically validated for depression. The problem wasn't the science &mdash; it was the hardware. Existing devices looked clinical. Patients were embarrassed to use them at home. Adherence dropped. The therapy failed not because of efficacy but because of design.</p>
+      <p>The brief: build a device patients <strong>want to wear</strong>, that fits every head size, and works precisely enough for clinical use.</p>
+      <div class="pq"><p>&ldquo;If a patient is embarrassed to wear it, the therapy doesn't work &mdash; regardless of the engineering.&rdquo;</p></div>
+    </div>
+    <div>
+      <table class="specs">
+        <tr><td>Therapy</td><td>tDCS &mdash; Transcranial Direct Current Stimulation</td></tr>
+        <tr><td>EEG channels</td><td>F1, F2, F7, F8 (frontal lobe)</td></tr>
+        <tr><td>tDCS electrodes</td><td>F3 &amp; F4, soft contact surfaces</td></tr>
+        <tr><td>Head fit</td><td>5th&ndash;95th percentile, single size</td></tr>
+        <tr><td>App</td><td>EEG + therapy only when connected to mobile app</td></tr>
+        <tr><td>Battery</td><td>One month per charge</td></tr>
+        <tr><td>Charging</td><td>Type-C port</td></tr>
+        <tr><td>Units made</td><td>150 (SLA + FDM)</td></tr>
+      </table>
+      <div class="tags">
+        <span class="tag">Wearable</span><span class="tag">Medical Device</span><span class="tag">tDCS</span>
+        <span class="tag">EEG</span><span class="tag">SLA Printing</span><span class="tag">Silicone Overmoulding</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="div"></div>
+
+<div class="s fade">
+  <div class="num">02</div><div class="lbl">Research &amp; Insights</div>
+  <h2>What patients and clinicians <em>actually said</em>.</h2>
+  <p>Clinical interviews, competitive teardowns, and anthropometric head studies. Six findings shaped every design decision.</p>
+  <div class="cards">
+    <div class="card fade fd1"><div class="cn">01</div><h4>Stigma kills adherence</h4><p>Existing devices read as &ldquo;medical equipment.&rdquo; Patients felt embarrassed using them at home.</p></div>
+    <div class="card fade fd2"><div class="cn">02</div><h4>Electrode contact is critical</h4><p>Clinicians identified inconsistent F7/F8 contact as the #1 cause of ineffective therapy sessions.</p></div>
+    <div class="card fade fd3"><div class="cn">03</div><h4>One size fails everyone</h4><p>At 95th percentile, the mastoid electrode pushed painfully against the ear.</p></div>
+    <div class="card fade fd1"><div class="cn">04</div><h4>Simplicity reduces errors</h4><p>Every extra setup step increased the chance of incorrect use or abandonment for home users.</p></div>
+    <div class="card fade fd2"><div class="cn">05</div><h4>Discretion matters</h4><p>Patients wanted to wear it without attracting attention at home. Form was a clinical variable.</p></div>
+    <div class="card fade fd3"><div class="cn">06</div><h4>LED feedback builds trust</h4><p>Blink patterns for device states reduced anxiety about whether therapy was actually running.</p></div>
+  </div>
+</div>
+<div class="div"></div>
+
+<div class="s fade">
+  <div class="num">03</div><div class="lbl">Design Process &amp; Concept Refinement</div>
+  <h2>Multiple directions. Hard <em>decisions</em>.</h2>
+  <p>Several form directions explored &mdash; from crown bands to Y-frames &mdash; each tested on real heads across percentile ranges.</p>
+  <div class="steps">
+    <div class="step"><div class="sn">01</div><div><h4>Competitive teardown &amp; benchmarking</h4><p>Disassembled 6 existing tDCS/EEG devices. All prioritised clinical utility over wearable ergonomics &mdash; a clear gap to design into.</p><span class="stag">Discovery</span></div></div>
+    <div class="step"><div class="sn">02</div><div><h4>Anthropometric study</h4><p>Mapped head circumference, F7/F8 positions, and mastoid bone geometry across the 5th&ndash;95th percentile range. This drove the single-size + silicone flex solution.</p><span class="stag">Research</span></div></div>
+    <div class="step"><div class="sn">03</div><div><h4>Foam &amp; FDM mockup rounds (&times;4)</h4><p>From foam-and-tape to FDM assemblies. Key pivot: asymmetric Y-frame naturally locates F7/F8. White CMF tested first &mdash; navy performed better for patient perception.</p><span class="stag">Prototyping</span></div></div>
+    <div class="step"><div class="sn">04</div><div><h4>Concept selection on real heads</h4><p>Fit tested from 5th to 95th percentile. Final form selected for natural electrode placement, comfortable mastoid fit, and wearable silhouette.</p><span class="stag">Validation</span></div></div>
+  </div>
+</div>
+
+<div style="background:#f5f5f5;margin:0;">
+  <img data-key="c" class="ifull lbimg" src="" alt="Concept refinement">
+  <p class="cap">Concept refinement &mdash; crown bands to Y-frames, structural challenges identified at each stage</p>
+</div>
+<div style="background:#fff;margin:0;">
+  <img data-key="pr" class="ifull lbimg" src="" alt="Prototyping on participants">
+  <p class="cap">Foam &amp; FDM prototypes fit-tested from 5th to 95th percentile head sizes</p>
+</div>
+<div class="div"></div>
+
+<div class="s fade">
+  <div class="num">04</div><div class="lbl">Final Design</div>
+  <h2>One size. Every head. <em>No compromises</em>.</h2>
+  <div class="two">
+    <div>
+      <p>Two engineering decisions resolve universal fit: a <strong>5mm silicone overmoulded flex component</strong> at the top band, and a <strong>3cm free-moving EEG PCB</strong> at the rear letting the mastoid ground electrode float and conform to different ear positions.</p>
+      <p>F7/F8 electrodes use a silicone flex element for consistent contact pressure. Ground contacts are conductive rubber &mdash; soft enough not to push against larger ears. RGB LED blink patterns communicate device state for home users.</p>
+    </div>
+    <div>
+      <table class="specs">
+        <tr><td>Frame</td><td>SLA-printed shell + silicone overmould</td></tr>
+        <tr><td>Flex range</td><td>5mm via silicone overmoulded band</td></tr>
+        <tr><td>PCB travel</td><td>3cm free movement at rear</td></tr>
+        <tr><td>F7/F8 contact</td><td>Silicone flex element</td></tr>
+        <tr><td>Mastoid ground</td><td>Conductive rubber</td></tr>
+        <tr><td>State feedback</td><td>RGB LED blink patterns</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="i2" style="margin:0;">
+  <div class="islot lbimg" data-key="li" style="aspect-ratio:16/9;"><img src="" alt="Final design lifestyle render"></div>
+  <div class="islot lbimg" data-key="sk" style="aspect-ratio:16/9;"><img src="" alt="Sketch to 3D render"></div>
+</div>
+<p class="cap">Lifestyle render (left) &middot; sketch to 3D render showing form language evolution (right)</p>
+
+<div style="background:#f8f8f8;margin:0;">
+  <img data-key="ca" class="ifull lbimg" src="" alt="Final design callouts">
+  <p class="cap">5th&ndash;95th percentile fit &middot; silicone flex F7/F8 &middot; 3cm free-moving EEG PCB &middot; conductive rubber mastoid ground</p>
+</div>
+<div class="div"></div>
+
+<div class="s fade">
+  <div class="num">05</div><div class="lbl">Engineering Details &amp; Electrode Assembly</div>
+  <h2>Built to be <em>assembled, not just rendered</em>.</h2>
+  <p>Internal routing channels carry the TDCS wire cleanly through the frame. The PCB and battery occupy a dedicated rear housing. The electrode stack &mdash; cellulose sponge / conductive rubber sheet / metal plate / electrode holder &mdash; clips in and is replaceable without tools.</p>
+</div>
+
+<div class="i2" style="margin:0;">
+  <div class="islot lbimg" data-key="de" style="aspect-ratio:16/9;"><img src="" alt="Engineering details"></div>
+  <div class="islot lbimg" data-key="el" style="aspect-ratio:16/9;"><img src="" alt="Electrode assembly"></div>
+</div>
+<p class="cap">TDCS wire routing &amp; PCB housing (left) &middot; electrode assembly: sponge &rarr; conductive rubber &rarr; metal plate &rarr; holder (right)</p>
+<div class="div"></div>
+
+<div class="s fade">
+  <div class="num">06</div><div class="lbl">Usability Testing</div>
+  <h2>Real heads revealed a <em>real problem</em>.</h2>
+  <p>Testing on SLA-printed high-fidelity prototypes revealed a critical failure: at 95th percentile, the mastoid electrode was pushing against the ear. A shape and material revision was made before the final production run.</p>
+  <div class="pq"><p>&ldquo;Shape modifications and material re-selection were done for the mastoid ground electrode to comfortably fit a diverse population group.&rdquo;</p></div>
+  <p>Post-revision testing confirmed comfortable fit and consistent electrode contact from <strong>5th to 95th percentile</strong> without adjustment.</p>
+</div>
+
+<div style="background:#f5f5f5;margin:0;">
+  <img data-key="us" class="ifull lbimg" src="" alt="Usability testing">
+  <p class="cap">Usability testing on SLA-printed high-fidelity protos &middot; 95th percentile (left) through 50th percentile (right)</p>
+</div>
+<div class="div"></div>
+
+<div class="sd">
+  <div class="sdi fade">
+    <div class="num" style="color:rgba(255,255,255,.2);">07</div>
+    <div class="lbl">Outcomes &amp; Impact</div>
+    <h2>From bench to clinical use &mdash; <em>at scale</em>.</h2>
+    <p>150 units manufactured and deployed to clinical partners. Single-size solution simplified inventory. Patients describe it as &ldquo;like a headphone.&rdquo; The mastoid redesign eliminated the ear-pressure failure mode. Project remains active.</p>
+    <div class="stats">
+      <div class="stat"><div class="stn">150</div><div class="stl">Units produced &amp; deployed</div></div>
+      <div class="stat"><div class="stn">4</div><div class="stl">Mockup rounds completed</div></div>
+      <div class="stat"><div class="stn">5&ndash;95</div><div class="stl">Percentile range, single size</div></div>
+      <div class="stat"><div class="stn">1mo</div><div class="stl">Battery life per charge</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">Marbles &middot; <span>Brain Stimulation Headset</span></div>
+  <a href="index.html" class="fb">&#8592; Back to portfolio</a>
+</footer>
+
+<div class="lb" id="lb">
+  <div class="lbbg" id="lbbg"></div>
+  <button class="lbx" id="lbx">&#x2715;</button>
+  <div class="lbw" id="lbw"></div>
+</div>
+<script>
+var I={c:"images/marbles-concept-refinement.png",pr:"images/marbles-prototyping.png",li:"images/marbles-lifestyle.png",sk:"images/marbles-sketch-render.png",ca:"images/marbles-callouts.png",de:"images/marbles-details.png",el:"images/marbles-electrode.png",us:"images/marbles-usability.png"};
+
+// Inject images by data-key
+document.querySelectorAll('[data-key]').forEach(function(el) {
+  var src = I[el.dataset.key];
+  if (el.tagName === 'IMG') { el.src = src; }
+  else { var img = el.querySelector('img'); if (img) img.src = src; }
+});
+
+// Lightbox
+function openLb(src) {
+  document.getElementById('lbw').innerHTML = '<img src="' + src + '">';
+  document.getElementById('lb').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+  document.getElementById('lb').classList.remove('on');
+  document.body.style.overflow = '';
+}
+document.getElementById('lbbg').addEventListener('click', closeLb);
+document.getElementById('lbx').addEventListener('click', closeLb);
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLb(); });
+
+document.querySelectorAll('.lbimg').forEach(function(el) {
+  el.addEventListener('click', function() {
+    var src = I[el.dataset.key];
+    openLb(src);
+  });
+});
+
+// Cursor
+var cur = document.getElementById('cur'), ring = document.getElementById('ring');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', function(e) { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function tick() { rx+=(mx-rx)*.15; ry+=(my-ry)*.15; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tick); })();
+document.querySelectorAll('a,button,.islot,.ifull,.card').forEach(function(el) {
+  el.addEventListener('mouseenter', function() { cur.style.width='20px'; cur.style.height='20px'; ring.style.width='56px'; ring.style.height='56px'; ring.style.opacity='0.8'; });
+  el.addEventListener('mouseleave', function() { cur.style.width='12px'; cur.style.height='12px'; ring.style.width='36px'; ring.style.height='36px'; ring.style.opacity='0.5'; });
+});
+
+// Fade in
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('on'); });
+}, {threshold: .05});
+document.querySelectorAll('.fade').forEach(function(el) { obs.observe(el); });
+
+</script>
+</body></html>
